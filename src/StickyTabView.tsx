@@ -1,17 +1,47 @@
 import React, {useState} from 'react';
-import {View, Text} from 'react-native';
+import {View, Text, ScrollView, StyleSheet} from 'react-native';
 import {TabView, TabBar} from 'react-native-tab-view';
-// import Animated from 'react-native-reanimated';
+import Animated from 'react-native-reanimated';
+
+import {
+  Header,
+  LearnMoreLinks,
+  DebugInstructions,
+  ReloadInstructions,
+} from 'react-native/Libraries/NewAppScreen';
 
 const routes = [
   {key: 'about', title: 'About'},
   {key: 'links', title: 'Links'},
-  {key: 'foo', title: 'Foo'},
-  {key: 'bar', title: 'Bar'},
+  {key: 'debug', title: 'Debug'},
+  {key: 'reload', title: 'Reload'},
 ];
+
+const HEADER_HEIGHT = 192;
+
+const styles = StyleSheet.create({
+  scrollView: {backgroundColor: 'white'},
+  header: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    overflow: 'hidden',
+    height: HEADER_HEIGHT,
+  },
+});
 
 export const StickyTabView: React.FC<{}> = () => {
   const [index, setIndex] = useState(0);
+
+  const margin = new Animated.Value(HEADER_HEIGHT);
+  const y = new Animated.Value(0);
+
+  const translateY = Animated.interpolate(y, {
+    inputRange: [0, HEADER_HEIGHT],
+    outputRange: [0, -HEADER_HEIGHT],
+    extrapolate: Animated.Extrapolate.CLAMP,
+  });
 
   return (
     <TabView
@@ -21,27 +51,37 @@ export const StickyTabView: React.FC<{}> = () => {
         switch (props.route.key) {
           case 'about':
             return (
-              <View>
-                <Text>This is About Page</Text>
-              </View>
+              <Animated.ScrollView
+                scrollEventThrottle={1}
+                onScroll={Animated.event([
+                  {nativeEvent: {contentOffset: {y}, useNativeDriver: true}},
+                ])}
+                style={styles.scrollView}>
+                <LearnMoreLinks />
+              </Animated.ScrollView>
             );
           case 'links':
             return (
-              <View>
-                <Text>This is Links Page</Text>
-              </View>
+              <Animated.ScrollView
+                scrollEventThrottle={1}
+                onScroll={Animated.event([
+                  {nativeEvent: {contentOffset: {y}, useNativeDriver: true}},
+                ])}
+                style={styles.scrollView}>
+                <LearnMoreLinks />
+              </Animated.ScrollView>
             );
-          case 'foo':
+          case 'debug':
             return (
-              <View>
-                <Text>This is foo Page</Text>
-              </View>
+              <ScrollView style={styles.scrollView}>
+                <DebugInstructions />
+              </ScrollView>
             );
-          case 'bar':
+          case 'reload':
             return (
-              <View>
-                <Text>This is bar Page</Text>
-              </View>
+              <ScrollView style={styles.scrollView}>
+                <ReloadInstructions />
+              </ScrollView>
             );
           default:
             return (
@@ -51,7 +91,14 @@ export const StickyTabView: React.FC<{}> = () => {
             );
         }
       }}
-      renderTabBar={props => <TabBar {...props} />}
+      renderTabBar={props => (
+        <Animated.View style={{paddingTop: Animated.sub(margin, y)}}>
+          <Animated.View style={[styles.header, {transform: [{translateY}]}]}>
+            <Header />
+          </Animated.View>
+          <TabBar {...props} />
+        </Animated.View>
+      )}
     />
   );
 };
