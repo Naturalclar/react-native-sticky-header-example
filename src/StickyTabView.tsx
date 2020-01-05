@@ -1,14 +1,9 @@
-import React, {useState} from 'react';
-import {View, Text, ScrollView, StyleSheet} from 'react-native';
+import React, {useState, useCallback} from 'react';
+import {StyleSheet} from 'react-native';
 import {TabView, TabBar} from 'react-native-tab-view';
 import Animated from 'react-native-reanimated';
 
-import {
-  Header,
-  LearnMoreLinks,
-  DebugInstructions,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+import {Header, LearnMoreLinks} from 'react-native/Libraries/NewAppScreen';
 
 const routes = [
   {key: 'about', title: 'About'},
@@ -36,6 +31,21 @@ export const StickyTabView: React.FC<{}> = () => {
 
   const margin = new Animated.Value(HEADER_HEIGHT);
   const y = new Animated.Value(0);
+  const AnimatedScrollView = useCallback(
+    ({children}) => {
+      return (
+        <Animated.ScrollView
+          scrollEventThrottle={1}
+          onScroll={Animated.event([
+            {nativeEvent: {contentOffset: {y}, useNativeDriver: true}},
+          ])}
+          style={styles.scrollView}>
+          {children}
+        </Animated.ScrollView>
+      );
+    },
+    [y],
+  );
 
   const translateY = Animated.interpolate(y, {
     inputRange: [0, HEADER_HEIGHT],
@@ -51,43 +61,27 @@ export const StickyTabView: React.FC<{}> = () => {
         switch (props.route.key) {
           case 'about':
             return (
-              <Animated.ScrollView
-                scrollEventThrottle={1}
-                onScroll={Animated.event([
-                  {nativeEvent: {contentOffset: {y}, useNativeDriver: true}},
-                ])}
-                style={styles.scrollView}>
+              <AnimatedScrollView>
                 <LearnMoreLinks />
-              </Animated.ScrollView>
+              </AnimatedScrollView>
             );
           case 'links':
             return (
-              <Animated.ScrollView
-                scrollEventThrottle={1}
-                onScroll={Animated.event([
-                  {nativeEvent: {contentOffset: {y}, useNativeDriver: true}},
-                ])}
-                style={styles.scrollView}>
+              <AnimatedScrollView>
                 <LearnMoreLinks />
-              </Animated.ScrollView>
+              </AnimatedScrollView>
             );
           case 'debug':
             return (
-              <ScrollView style={styles.scrollView}>
-                <DebugInstructions />
-              </ScrollView>
+              <AnimatedScrollView>
+                <LearnMoreLinks />
+              </AnimatedScrollView>
             );
           case 'reload':
             return (
-              <ScrollView style={styles.scrollView}>
-                <ReloadInstructions />
-              </ScrollView>
-            );
-          default:
-            return (
-              <View>
-                <Text>This is default Page</Text>
-              </View>
+              <AnimatedScrollView>
+                <LearnMoreLinks />
+              </AnimatedScrollView>
             );
         }
       }}
