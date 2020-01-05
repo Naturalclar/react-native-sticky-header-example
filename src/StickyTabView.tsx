@@ -1,5 +1,5 @@
 import React, {useState, useCallback, useRef} from 'react';
-import {StyleSheet} from 'react-native';
+import {StyleSheet, Platform} from 'react-native';
 import {TabView, TabBar} from 'react-native-tab-view';
 import Animated from 'react-native-reanimated';
 
@@ -13,7 +13,7 @@ const routes = [
 ];
 
 const HEADER_HEIGHT = 192;
-
+const TAB_HEIGHT = Platform.OS === 'ios' ? 40 : 48;
 const styles = StyleSheet.create({
   scrollView: {backgroundColor: 'white'},
   header: {
@@ -22,14 +22,14 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     overflow: 'hidden',
-    height: HEADER_HEIGHT,
+    height: HEADER_HEIGHT + TAB_HEIGHT,
+    zIndex: 2,
   },
 });
 
 export const StickyTabView: React.FC<{}> = () => {
   const [index, setIndex] = useState(0);
 
-  const margin = useRef(new Animated.Value(HEADER_HEIGHT)).current;
   const y = useRef(new Animated.Value(0)).current;
 
   const AnimatedScrollView = useCallback(
@@ -70,11 +70,13 @@ export const StickyTabView: React.FC<{}> = () => {
             return (
               <AnimatedScrollView>
                 <LearnMoreLinks />
+                <LearnMoreLinks />
               </AnimatedScrollView>
             );
           case 'links':
             return (
               <AnimatedScrollView>
+                <LearnMoreLinks />
                 <LearnMoreLinks />
               </AnimatedScrollView>
             );
@@ -82,21 +84,21 @@ export const StickyTabView: React.FC<{}> = () => {
             return (
               <AnimatedScrollView>
                 <LearnMoreLinks />
+                <LearnMoreLinks />
               </AnimatedScrollView>
             );
           case 'reload':
             return (
               <AnimatedScrollView>
                 <LearnMoreLinks />
+                <LearnMoreLinks />
               </AnimatedScrollView>
             );
         }
       }}
       renderTabBar={props => (
-        <Animated.View style={{paddingTop: Animated.sub(margin, y)}}>
-          <Animated.View style={[styles.header, {transform: [{translateY}]}]}>
-            <Header />
-          </Animated.View>
+        <Animated.View style={[styles.header, {transform: [{translateY}]}]}>
+          <Header />
           <TabBar {...props} />
         </Animated.View>
       )}
