@@ -44,7 +44,7 @@ export const StickyTabView: React.FC<{}> = () => {
               },
             },
           ])}
-          style={styles.scrollView}>
+          style={[styles.scrollView, {paddingTop: HEADER_HEIGHT + TAB_HEIGHT}]}>
           {children}
         </Animated.ScrollView>
       );
