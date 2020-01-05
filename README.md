@@ -6,7 +6,7 @@ Sample implementation of sticky header using [react-native-tabview](https://gith
 
 | iOS | Android |
 | --- | --- |
-| <img src="https://user-images.githubusercontent.com/6936373/71782112-cffcfa80-3019-11ea-867c-bd2be2cd6d2a.gif" /> | <img src="https://user-images.githubusercontent.com/6936373/71782107-ca071980-3019-11ea-9a2d-5495aa538759.gif" /> |
+| <img src="https://user-images.githubusercontent.com/6936373/71782263-90cfa900-301b-11ea-9a02-730db214afc3.gif" /> | <img src="https://user-images.githubusercontent.com/6936373/71782107-ca071980-3019-11ea-9a2d-5495aa538759.gif" /> |
 
 ## See it yourself
 
