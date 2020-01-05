@@ -1,4 +1,4 @@
-import React, {useState, useCallback} from 'react';
+import React, {useState, useCallback, useRef} from 'react';
 import {StyleSheet} from 'react-native';
 import {TabView, TabBar} from 'react-native-tab-view';
 import Animated from 'react-native-reanimated';
@@ -29,15 +29,20 @@ const styles = StyleSheet.create({
 export const StickyTabView: React.FC<{}> = () => {
   const [index, setIndex] = useState(0);
 
-  const margin = new Animated.Value(HEADER_HEIGHT);
-  const y = new Animated.Value(0);
+  const margin = useRef(new Animated.Value(HEADER_HEIGHT)).current;
+  const y = useRef(new Animated.Value(0)).current;
+
   const AnimatedScrollView = useCallback(
     ({children}) => {
       return (
         <Animated.ScrollView
           scrollEventThrottle={1}
           onScroll={Animated.event([
-            {nativeEvent: {contentOffset: {y}, useNativeDriver: true}},
+            {
+              nativeEvent: {
+                contentOffset: {y},
+              },
+            },
           ])}
           style={styles.scrollView}>
           {children}
@@ -47,11 +52,13 @@ export const StickyTabView: React.FC<{}> = () => {
     [y],
   );
 
-  const translateY = Animated.interpolate(y, {
-    inputRange: [0, HEADER_HEIGHT],
-    outputRange: [0, -HEADER_HEIGHT],
-    extrapolate: Animated.Extrapolate.CLAMP,
-  });
+  const translateY = useRef(
+    Animated.interpolate(y, {
+      inputRange: [0, HEADER_HEIGHT],
+      outputRange: [0, -HEADER_HEIGHT],
+      extrapolate: Animated.Extrapolate.CLAMP,
+    }),
+  ).current;
 
   return (
     <TabView
